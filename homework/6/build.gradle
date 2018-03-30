@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
+apply plugin: 'cobertura'
+
+test.testLogging { exceptionFormat "full"; events "failed", "passed", "skipped" }
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+findbugs {
+  toolVersion = "3.0.0"
+  ignoreFailures = true
+  excludeFilter = file("$projectDir/config/findbugs/excludeFilter.xml")
+}
+
+checkstyle {
+  ignoreFailures = true
+  toolVersion = "6.7"
+  sourceSets = [sourceSets.main]
+  checkstyleMain.exclude '**/edu/cmu/cs/cs214/hw6/util/*'
+}
+
+buildscript{
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath 'net.saliman:gradle-cobertura-plugin:2.2.5'
+  }
+}
+
+cobertura.coverageFormats = ['html', 'xml']
+
+apply plugin: 'application'
+mainClassName = "edu.cmu.cs.cs214.hw6.harness.MapReduceHarness"
+
+// These are the default arguments if no command line arguments are given to "gradle run". Feel free
+// to change them!
+List<String> defaultArgs = new ArrayList<String>();
+defaultArgs.add('src/main/resources/server_config/one_worker_fail.csv');
+defaultArgs.add('edu.cmu.cs.cs214.hw6.servers.DummyServer');
+defaultArgs.add('edu.cmu.cs.cs214.hw6.servers.DummyServer');
+
+run {
+
+  args = defaultArgs
+
+  if (project.hasProperty('myargs')) {
+    args(myargs.split(','))
+  }
+}

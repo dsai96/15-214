@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <Package name="edu.cmu.cs.cs214.hw6.util"/>
+  </Match>
+</FindBugsFilter>
